@@ -1,6 +1,6 @@
 package domain;
 
-public class Restaurant {
+public class Restaurant implements Comparable<Restaurant>{
     private int restaurantID;
     private String restaurantName;
     private String restaurantAddress;
@@ -70,4 +70,8 @@ public class Restaurant {
     }
 
 
+    @Override
+    public int compareTo(Restaurant o) {
+        return this.restaurantRate - o.restaurantRate;
+    }
 }

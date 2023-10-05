@@ -4,8 +4,7 @@ import dao.RestaurantDao;
 import domain.Restaurant;
 import service.RestaurantDaoImpl;
 
-import java.util.InputMismatchException;
-import java.util.List;
+import java.util.*;
 
 public class RestaurantApp {
     private static final RestaurantDao restaurantDao = new RestaurantDaoImpl();
@@ -38,6 +37,9 @@ public class RestaurantApp {
                     removeRestaurant();
                     break;
                 case 6:
+                    compareRestaurants();
+                    break;
+                case 7:
                     System.out.println("Goodbye!");
                     System.exit(0);
                 default:
@@ -51,10 +53,11 @@ public class RestaurantApp {
         System.out.println("\nWelcome to favorite restaurant application");
         System.out.println("1. Add restaurant");
         System.out.println("2. Display All restaurants");
-        System.out.println("3. Get Restaurant ");
+        System.out.println("3. Get Restaurant by name");
         System.out.println("4. Update restaurant ");
         System.out.println("5. Remove restaurant ");
-        System.out.println("6. Exit");
+        System.out.println("6. List best restaurants by rating");
+        System.out.println("7. Exit");
         System.out.print("Enter your choice: ");
     }
 
@@ -74,7 +77,7 @@ public class RestaurantApp {
         System.out.print("Enter restaurant address: ");
         String restaurantAddress = UserInput.getStringInput();
 
-        System.out.print("Enter restaurant rate: ");
+        System.out.print("Enter restaurant rate out of 10: ");
         int restaurantRate = UserInput.getIntInput();
 
         System.out.print("Enter restaurant phone number: ");
@@ -95,22 +98,23 @@ public class RestaurantApp {
     }
 
     private static void getRestaurantByName(){
-        displayAllRestaurants();
+        //displayAllRestaurants();
         System.out.print("Enter restaurant Name: ");
-        String restaurantName = UserInput.getStringInput();  //.toLowerCase()
+        Scanner s = new Scanner(System.in);
+        String restaurantName = s.nextLine();  //.toLowerCase()
         Restaurant r =  restaurantDao.retrieveRestaurantByName(restaurantName);
         System.out.println(r);
     }
 
     private static void updateRestaurant() {
         displayMenu();
-        System.out.print("Enter the restaurant Name to update: ");
-        String restaurantName = UserInput.getStringInput();
+        System.out.print("Enter the restaurant Id to update: ");
+        int restaurantId = UserInput.getIntInput();
         // Consume newline character
         UserInput.getStringInput();
-        Restaurant existingRestaurant = restaurantDao.retrieveRestaurantByName(restaurantName);
+        Restaurant existingRestaurant = restaurantDao.getRestauranttById(restaurantId);
         if (existingRestaurant == null) {
-            System.out.println("Rest with name " + restaurantName + " not found.");
+            System.out.println("Restaurant with id " + restaurantId + " not found.");
             return;
         }
 
@@ -123,7 +127,7 @@ public class RestaurantApp {
         System.out.print("Enter restaurant address: ");
         String newRestaurantAddress = UserInput.getStringInput();
 
-        System.out.print("Enter restaurant rate: ");
+        System.out.print("Enter restaurant rate out of 10: ");
         int newRestaurantRate = UserInput.getIntInput();
 
         System.out.print("Enter restaurant phone number: ");
@@ -154,6 +158,7 @@ public class RestaurantApp {
         System.out.println("Restaurant to be removed:");
         System.out.println(existingRestaurant);
 
+        UserInput.getStringInput();
         System.out.print("Are you sure you want to remove this restaurant? (y/n): ");
         String confirmation = UserInput.getStringInput();
 
@@ -165,4 +170,20 @@ public class RestaurantApp {
             System.out.println("Removal operation canceled.");
         }
     }
+    public static void compareRestaurants(){
+        System.out.print("List of best restaurants by rating: ");
+        List<Restaurant> restaurants = restaurantDao.getAllRestaurant();
+
+        Collections.sort(restaurants);
+
+        for (Restaurant r : restaurants){
+            System.out.println(r);
+        }
+    }
 }
+//    void sortComputerById(List<Computer> myList){
+//        Comparator<Computer> computerIdComparator = (Computer c1, Computer c2) -> {
+//            return Integer.compare(c1.getId(), c2.getId());
+//        };
+//        myList.sort(computerIdComparator);
+//    }
